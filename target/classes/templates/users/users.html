@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Users list</title>
+    <script>
+        window.onload = function() {
+            var errorMessage = document.getElementById('errorMessage');
+            if (errorMessage && errorMessage.textContent.trim() !== '') {
+                alert(errorMessage.textContent);
+            }
+        };
+    </script>
+</head>
+<body>
+<h3 id="errorMessage" th:text="${error_message}" style="display:none;"></h3>Ф
+<h1>Users list</h1>
+<a th:href="@{/users/add}">Create user</a>
+<h2>Filters</h2>
+<form action="/users" method="get">
+    <label>
+        Nickname:
+        <input type="text" name="nickname" th:value="${nickname}">
+    </label>
+    <br>
+    <label>
+        Min recipes count:
+        <input type="number" name="minRecipesCount" th:value="${minRecipesCount}">
+    </label>
+    <label>
+        Max recipes count:
+        <input type="number" name="maxRecipesCount" th:value="${maxRecipesCount}">
+    </label>
+    <label>
+        Show deleted:
+        <input type="checkbox" name="show_deleted" value="true">
+    </label>
+    <br>
+    <label>
+        Page:
+        <input type="number" name="page" th:value="${users.currentPage}">
+    </label>
+    <label>
+        Page size:
+        <input type="number" name="perPage" th:value="${users.pageSize}" min="10">
+    </label>
+
+    <button type="submit">Search</button>
+</form>
+<br>
+<br>
+
+<h2>Users:</h2>
+<ul>
+    <th:block th:each="user : ${users.value}">
+        <li>
+            <span th:text="'Login: ' + ${user.login}"></span>
+            <br>
+            <span th:text="'Nickname: ' + ${user.nickname}"></span>
+            <br>
+            <span th:text="'Password: ' + ${user.password}"></span>
+            <br>
+            <span th:text="'About me: ' + ${user.aboutMe}"></span>
+            <br>
+            <span th:text="'Email: ' + ${user.emailConf}"></span>
+            <br>
+            <span th:text="'Deleted: ' + ${user.deleted}"></span>
+            <br>
+            <span>Recipes</span>
+            <ul>
+                <th:block th:each="recipe: ${user.recipes}">
+                    <li>
+                        <span th:text="'Name: ' + ${recipe.recipe_name}"></span>
+                        <span th:text="'Description: ' + ${recipe.recipe_description}"></span>
+                        <a th:href="@{/recipes/edit/{id}(id=${recipe.id})}">Edit recipe</a>
+                        <a th:href="@{/recipes/delete/{id}(id=${recipe.id})}"
+                           onclick="return confirm('Вы уверены, что хотите удалить?');">Delete recipe</a>
+                        <form method="get" action="/ingredients">
+                            <input type="hidden" name="recipe_id" th:value="${recipe.id}">
+                            <input type="submit" value="Go to recipe`s ingredients config">
+                        </form>
+                        <span>Ingredients</span>
+                        <ul>
+                            <th:block th:each="ingredient, status : ${recipe.ingredients}">
+                                <li>
+                                    <span th:text="'Name(en) - ' + ${ingredient.name.en} + '; Name(ru) - ' + ${ingredient.name.ru} + ' (Deleted-' + ${ingredient.deleted} + ')'"/>
+                                    <span th:text="'Amount: ' + ${ingredient.amount} + ${ingredient.measureType.displayName}"/>
+                                </li>
+                            </th:block>
+                        </ul>
+
+                        <span>Filters</span>
+                        <ul>
+                            <th:block th:each="filter : ${recipe.filters}">
+                                <li>
+                                    <span th:text="'Name(en) - ' + ${filter.name.en} + '; Name(ru) - ' + ${filter.name.ru} + ' (Deleted-' + ${filter.deleted} + ')'"/>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </li>
+                </th:block>
+            </ul>
+            <a th:href="@{/users/update/{id}(id=${user.id})}">Update user</a>
+            <a th:href="@{/users/delete/{id}(id=${user.id})}" onclick="return confirm('Confirm to delete?');">Delete</a>
+            <form action="/banList/edit" method="get">
+                <input type="hidden" name="user" th:value="${user.id}">
+                <button type="submit">Ban</button>
+            </form>
+        </li>
+    </th:block>
+</ul>
+</body>
+</html>

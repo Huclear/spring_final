@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Create ingredient</title>
+</head>
+<body>
+<form action="#" th:action="@{/ingredients/add}" th:object="${ingredient_model}" method="post">
+
+    <select th:field="*{recipe}" required>
+        <option th:each="recipe : ${allowed_recipes}"
+                th:value="${recipe.id}"
+                th:text="${recipe.id} + ' - ' + ${recipe.recipe_name} + ' - ' + ${recipe.recipe_description}"></option>
+    </select>
+
+    <input type="text" th:field="*{name.en}" placeholder="Название (англ)" required>
+    <div th:if="${#fields.hasErrors('name')}" style="color:red;">
+        <span th:errors="*{name}"></span>
+    </div>
+
+    <input type="text" th:field="*{name.ru}" placeholder="Название (англ)" required>
+    <div th:if="${#fields.hasErrors('name')}" style="color:red;">
+        <span th:errors="*{name}"></span>
+    </div>
+
+    <input type="number" th:field="*{amount}" placeholder="Количество" required>
+
+    <select th:field="*{measureType}" required>
+        <option th:each="measure : ${measures}"
+                th:value="${measure}"
+                th:text="${measure.displayName}"></option>
+    </select>
+    <button type="submit">Add ingredient</button>
+</form>
+</body>
+</html>

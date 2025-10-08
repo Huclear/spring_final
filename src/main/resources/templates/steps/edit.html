@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit step</title>
+</head>
+<body>
+<form action="#" th:action="@{/steps/edit}" th:object="${step_model}" method="post">
+
+    <label>
+        Recipe:
+        <select th:field="*{recipe}" required>
+            <option th:each="recipe : ${allowed_recipes}"
+                    th:value="${recipe.id}"
+                    th:text="${recipe.id} + ' - ' + ${recipe.recipe_name} + ' - ' + ${recipe.recipe_description}"></option>
+        </select>
+    </label>
+
+    <input type="text" th:field="*{description}" placeholder="Описание" required>
+    <div th:if="${#fields.hasErrors('description')}" style="color:red;">
+        <span th:errors="*{description}"></span>
+    </div>
+
+    <input type="number" min="0" th:field="*{durationMinutes}" placeholder="Время (минуты)" required>
+    <input type="number" min="1" th:field="*{step_order}" placeholder="Порядковый номер" required>
+    <button type="submit">Edit step</button>
+</form>
+</body>
+</html>

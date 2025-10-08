@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit filter</title>
+</head>
+<body>
+<form action="#" th:action="@{/fitlers/update}" method="post" th:object="${filter_model}">
+    <select th:field="*{recipes}" multiple="multiple">
+        <option th:each="recipe : ${allowed_recipes}"
+                th:value="${recipe.id}"
+                th:text="${recipe.id} + ' - ' + ${recipe.recipe_name} + ' - ' + ${recipe.recipe_description}"></option>
+    </select>
+
+    <input type="text" th:field="*{name.en}" placeholder="Название (англ)" required>
+    <div th:if="${#fields.hasErrors('name')}" style="color:red;">
+        <span th:errors="*{name}"></span>
+    </div>
+
+    <input type="text" th:field="*{name.ru}" placeholder="Название (англ)" required>
+    <div th:if="${#fields.hasErrors('name')}" style="color:red;">
+        <span th:errors="*{name}"></span>
+    </div>
+    <button type="submit">Edit ilter</button>
+</form>
+</body>
+</html>

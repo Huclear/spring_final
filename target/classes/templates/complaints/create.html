@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Create complaint</title>
+</head>
+<body>
+<form action="#" th:action="@{/complaints/add}" th:object="${complaint_model}" method="post">
+
+    <select th:field="*{recipe}">
+        <option value="">None</option>
+        <option th:each="recipe : ${allowed_recipes}"
+                th:value="${recipe.id}"
+                th:text="${recipe.id} + ' - ' + ${recipe.recipe_name} + ' - ' + ${recipe.recipe_description}"></option>
+    </select>
+
+    <select th:field="*{user}">
+        <option value="">None</option>
+        <option th:each="user : ${allowed_users}"
+                th:value="${user.id}"
+                th:text="${user.id} + ' - ' + ${user.login} + ' - ' + ${user.nickname}"></option>
+    </select>
+
+    <input type="text" th:field="*{topic}" placeholder="Тема" minlength="50" maxlength="500" required>
+    <div th:if="${#fields.hasErrors('topic')}" style="color:red;">
+        <span th:errors="*{topic}"></span>
+    </div>
+
+    <input type="text" th:field="*{description}" placeholder="Описание" minlength="50" maxlength="500" required>
+    <div th:if="${#fields.hasErrors('description')}" style="color:red;">
+        <span th:errors="*{description}"></span>
+    </div>
+
+    <button type="submit">Add complaint</button>
+</form>
+</body>
+</html>

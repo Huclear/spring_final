@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Recipes list</title>
+    <script>
+        window.onload = function() {
+            var errorMessage = document.getElementById('errorMessage');
+            if (errorMessage && errorMessage.textContent.trim() !== '') {
+                alert(errorMessage.textContent);
+            }
+        };
+    </script>
+</head>
+<body>
+<h3 id="errorMessage" th:text="${error_message}" style="display:none;"></h3>
+<h1>Recipes list</h1>
+<a th:href="@{/recipes/add}">Create recipe</a>
+</form>
+<form action="/recipes" method="get">
+    <label>
+        Name:
+        <input type="text" name="name" th:value="${name}">
+    </label>
+    <label>
+        Minimum total time:
+        <input type="number" name="time_from" th:value="${time_from}">
+    </label>
+    <label>
+        Maximum total time:
+        <input type="number" name="time_to" th:value="${time_to}">
+    </label>
+    <br>
+    <br>
+    <label>
+        Page:
+        <input type="number" name="page" th:value="${recipes.currentPage}">
+    </label>
+    <label>
+        Page size:
+        <input type="number" name="perPage" th:value="${recipes.pageSize}" min="10">
+    </label>
+    <br>
+    <input th:value="${ingredients}" name="ingredients" type="hidden">
+    <br>
+    <label>
+        Show deleted:
+        <input type="checkbox" name="show_deleted" value="true">
+    </label>
+    <br>
+
+    <select th:value="${applied_filters}" name="filters" multiple="multiple">
+        <option th:each="filter : ${filters}"
+                th:value="${filter.name.en} ?: ${filter.name.ru}"
+                th:text="'Name(en) - ' + ${filter.name.en} + '; Name(ru) - ' + ${filter.name.ru}"></option>
+
+    </select>
+    <button type="submit">Search</button>
+</form>
+<br>
+<form action="#" th:action="@{/recipes/addIngrFilter}" method="post" th:object="${ingr_filter_model}">
+    <label>
+        Ingredient name:
+        <input th:field="*{ingredientName}" type="text">
+    </label>
+
+    <select th:field="*{currentMeasure}">
+        <option th:each="option : ${measures}"
+                th:value="${option}"
+                th:text="${option.displayName}"></option>
+
+    </select>
+    <label>
+        Amount from:
+        <input th:field="*{amountFrom}" type="number">
+    </label>
+    <label>
+        Amount to:
+        <input th:field="*{amountTo}" type="number">
+    </label>
+    <button type="submit">Add filter</button>
+    <br>
+</form>
+<ul>
+    <th:block th:each="ingredientF, status : ${ingredients}">
+        <li>
+            <span th:text="'Ingredient: ' + ${ingredientF.ingredientName} + '- of measure: ' + ${ingredientF.currentMeasure.displayName} + '- from ' + ${ingredientF.amountFrom} + '- to ' + ${ingredientF.amountTo}"/>
+            <form action="/recipes/removeIngrFilter" method="post">
+                <input type="hidden" th:value="${status.index}" name="removedFilter">
+                <button type="submit">Remove</button>
+            </form>
+        </li>
+    </th:block>
+</ul>
+
+<h2>Recipes:</h2>
+<br>
+<br>
+<th:block th:each="recipe : ${recipes.value}">
+    <li>
+        <span><b th:text="'Rating: ' + ${recipe.rating}"></b></span>
+        <span th:text="'Name: ' + ${recipe.recipe_name}"></span>
+        <span th:text="'Description: ' + ${recipe.recipe_description}"></span>
+        <span th:text="'User: ' + ${recipe.user.id} + ' - ' + ${recipe.user.login} + ' - ' + ${recipe.user.nickname}"></span>
+        <a th:href="@{/recipes/edit/{id}(id=${recipe.id})}">Edit recipe</a>
+        <a th:href="@{/recipes/delete/{id}(id=${recipe.id})}"
+           onclick="return confirm('Вы уверены, что хотите удалить?');">Delete recipe</a>
+        <br>
+        <form method="get" action="/ingredients">
+            <input type="hidden" name="recipe_id" th:value="${recipe.id}">
+            <input type="submit" value="Go to recipe`s ingredients config">
+        </form>
+        <br>
+        <form method="get" action="/steps">
+            <input type="hidden" name="recipe_id" th:value="${recipe.id}">
+            <input type="submit" value="Go to recipe`s steps config">
+        </form>
+        <br>
+        <span>Ingredients</span>
+        <ul>
+            <th:block th:each="ingredient, status : ${recipe.ingredients}">
+                <li>
+                    <span th:text="'Name(en) - ' + ${ingredient.name.en} + '; Name(ru) - ' + ${ingredient.name.ru} + ' (Deleted-' + ${ingredient.deleted} + ')'"/>
+                    <span th:text="'Amount: ' + ${ingredient.amount} + ${ingredient.measureType.displayName}"/>
+                </li>
+            </th:block>
+        </ul>
+
+        <br>
+        <span>Steps</span>
+        <ul>
+            <th:block th:each="step : ${recipe.steps}">
+                <li>
+                    <span th:text="'Order - ' + ${step.step_order}"/>
+                    <span th:text="'Description: ' + ${step.description}"/>
+                    <span th:text="'Duration (min): ' + ${step.durationMinutes}"/>
+                </li>
+            </th:block>
+        </ul>
+
+        <span>Filters</span>
+        <ul>
+            <th:block th:each="filter : ${recipe.filters}">
+                <li>
+                    <span th:text="'Name(en) - ' + ${filter.name.en} + '; Name(ru) - ' + ${filter.name.ru} + ' (Deleted-' + ${filter.deleted} + ')'"/>
+                </li>
+            </th:block>
+        </ul>
+    </li>
+</th:block>
+<br>
+</body>
+</html>

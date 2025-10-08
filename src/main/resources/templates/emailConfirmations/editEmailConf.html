@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit email confirmation</title>
+</head>
+<body>
+<form action="#" th:action="@{/emailConf/update}" method="post" th:object="${emailConf_model}">
+    <input type="email" th:field="*{email}" placeholder="Почта" required>
+    <div th:if="${#fields.hasErrors('email')}" style="color:red;">
+        <span th:errors="*{email}"></span>
+    </div>
+
+    <input type="text" th:field="*{hash}" placeholder="Код подтверждения">
+
+    <input type="date" th:field="*{tokenExpired}" placeholder="Дата окончания действия кода">
+    <div th:if="${#fields.hasErrors('tokenExpired')}" style="color:red;">
+        <span th:errors="*{tokenExpired}"></span>
+    </div>
+
+    <select th:field="*{user}" required>
+        <option th:each="userV : ${allowedUsers}"
+                th:value="${userV.id}"
+                th:text="${userV.id} + ' - ' + ${userV.login} + ' - ' + ${userV.nickname}"></option>
+
+    </select>
+
+    <label>
+        Confirmed: <input type="checkbox" th:field="*{confirmed}" required>
+    </label>
+    <div th:if="${#fields.hasErrors('confirmed')}" style="color:red;">
+        <span th:errors="*{confirmed}"></span>
+    </div>
+    <button type="submit">Edit email confirmation</button>
+</form>
+</body>
+</html>

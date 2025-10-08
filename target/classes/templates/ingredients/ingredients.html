@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe`s ingredients</title>
+    <script>
+        window.onload = function() {
+            var errorMessage = document.getElementById('errorMessage');
+            if (errorMessage && errorMessage.textContent.trim() !== '') {
+                alert(errorMessage.textContent);
+            }
+        };
+    </script>
+</head>
+<body>
+<h3 id="errorMessage" th:text="${error_message}" style="display:none;"></h3>
+<h1>Ingredients list</h1>
+<a th:href="@{/ingredients/add}">Add ingredient</a>
+<form action="/ingredients" method="get">
+    <label>
+        Name:
+        <input type="text" name="name" th:value="${searched_name}">
+    </label>
+    <br>
+    <label>
+        Measure:
+        <select name="measure" th:value="${selected_measure}">
+            <option th:each="measure : ${measures}"
+                    th:value="${measure}"
+                    th:text="${measure.displayName}"></option>
+
+        </select>
+    </label>
+    <select name="recipe_id" th:value="${selected_recipe}" required>
+        <option th:each="recipe : ${allowed_recipes}"
+                th:value="${recipe.id}"
+                th:text="${recipe.recipe_name} + ' - ' + ${recipe.recipe_description}"></option>
+    </select>
+
+    <br>
+    <label>
+        Page:
+        <input type="number" name="page" th:value="${ingredients.currentPage}">
+    </label>
+    <label>
+        Page size:
+        <input type="number" name="perPage" th:value="${ingredients.pageSize}" min="10">
+    </label>
+    <label>
+        Show deleted:
+        <input type="checkbox" name="show_deleted" value="true">
+    </label>
+
+    <br>
+    <button type="submit">Search</button>
+</form>
+<br>
+<br>
+<ul>
+<h2>Ingredients:</h2>
+    <th:block th:each="ingredient : ${ingredients.value}">
+        <li>
+            <span th:text="'Name(en) - ' + ${ingredient.name.en}"></span>
+            <span th:text="'Name(ru) - ' + ${ingredient.name.en}"></span>
+            <span th:text="'amount - ' + ${ingredient.amount}"></span>
+            <span th:text="'Measure - ' + ${ingredient.measureType}"></span>
+
+            <a th:href="@{/ingredients/update/{id}(id=${ingredient.id})}">Edit ingredient</a>
+            <a th:href="@{/ingredients/delete/{id}(id=${ingredient.id})}" onclick="return confirm('Вы уверены, что хотите удалить?');">Delete ingredient</a>
+        </li>
+    </th:block>
+</ul>
+</body>
+</html>

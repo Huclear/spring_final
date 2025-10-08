@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit ban</title>
+</head>
+<body>
+<form action="#" th:action="@{/banList/edit}" th:object="${ban_model}" method="post">
+
+    <span th:text="'User - ' + ${ban_model.user.id} + ' - ' + ${ban_model.user.login} + ' - ' + ${ban_model.user.nickname}"></span>
+    <br>
+
+
+    <input type="date" th:field="*{ban_expired}" placeholder="Забанен до" required>
+    <div th:if="${#fields.hasErrors('ban_expired')}" style="color:red;">
+        <span th:errors="*{ban_expired}"></span>
+    </div>
+
+    <label>
+        <input type="checkbox" th:field="*{isPermanent}">
+        Is permanent
+    </label>
+
+    <button type="submit">Edit ban</button>
+</form>
+</body>
+</html>

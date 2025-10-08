@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Filters</title>
+    <script>
+        window.onload = function() {
+            var errorMessage = document.getElementById('errorMessage');
+            if (errorMessage && errorMessage.textContent.trim() !== '') {
+                alert(errorMessage.textContent);
+            }
+        };
+    </script>
+</head>
+<body>
+<h3 id="errorMessage" th:text="${error_message}" style="display:none;"></h3>
+<h1>Filters list</h1>
+<a th:href="@{/filters/add}">Create filter</a>
+<h2>Filters</h2>
+
+<form action="/filters" method="get">
+    <label>
+        Name:
+        <input type="text" name="name" th:value="${name}">
+    </label>
+
+    <select th:value="${recipe_id}" name="recipe_id">
+        <option th:each="recipe : ${allowed_recipes}"
+                th:value="${recipe.id}"
+                th:text="${recipe.id} + ' - ' + ${recipe.recipe_name} + ' - ' + ${recipe.recipe_description}"></option>
+
+    </select>
+
+    <br>
+    <label>
+        Show deleted:
+        <input type="checkbox" name="show_deleted" value="true">
+    </label>
+    <br>
+    <label>
+        Page:
+        <input type="number" name="page" th:value="${filters.currentPage}">
+    </label>
+    <label>
+        Page size:
+        <input type="number" name="perPage" th:value="${filters.pageSize}" min="10">
+    </label>
+    <br>
+    <button type="submit">Search</button>
+</form>
+<br>
+<br>
+
+<h2>Filters list:</h2>
+<ul>
+    <th:block th:each="filter : ${filters.value}">
+        <li>
+            <span th:text="'Name(en): ' + ${filter.name.en}"></span>
+            <br>
+            <span th:text="'Name(ru): ' + ${filter.name.ru}"></span>
+            <br>
+            <span>Recipes</span>
+            <ul>
+                <th:block th:each="recipe: ${filter.recipes}">
+                    <li>
+                        <span th:text="'Name: ' + ${recipe.recipe_name}"></span>
+                        <span th:text="'Description: ' + ${recipe.recipe_description}"></span>
+                        <a th:href="@{/recipes/edit/{id}(id=${student.id})}">Edit recipe</a>
+                        <a th:href="@{/recipes/delete/{id}(id=${student.id})}"
+                           onclick="return confirm('Вы уверены, что хотите удалить?');">Delete recipe</a>
+                        <form method="get" action="/ingredients">
+                            <input type="hidden" name="recipe_id" th:value="${recipe.id}">
+                            <input type="submit" value="Go to recipe`s ingredients config">
+                        </form>
+                    </li>
+                </th:block>
+            </ul>
+            <a th:href="@{/filters/update/{id}(id=${filter.id})}">Update filter</a>
+            <a th:href="@{/filters/delete/{id}(id=${filter.id})}" onclick="return confirm('Confirm to delete?');">Delete</a>
+        </li>
+    </th:block>
+</ul>
+</body>
+</html>

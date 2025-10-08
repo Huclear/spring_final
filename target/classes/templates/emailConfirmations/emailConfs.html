@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Email confirmations</title>
+    <script>
+        window.onload = function() {
+            var errorMessage = document.getElementById('errorMessage');
+            if (errorMessage && errorMessage.textContent.trim() !== '') {
+                alert(errorMessage.textContent);
+            }
+        };
+    </script>
+</head>
+<body>
+<h3 id="errorMessage" th:text="${error_message}" style="display:none;"></h3>
+<h1>Emails list</h1>
+<a th:href="@{/emailConf/add}">Create email confirmation</a>
+</form>
+<form action="/emailConf" method="get">
+    <label>
+        Email:
+        <input type="text" name="email" th:value="${email}">
+    </label>
+    <br>
+    <br>
+    <label>
+        Page:
+        <input type="number" name="page" th:value="${emailConfs.currentPage}">
+    </label>
+    <label>
+        Page size:
+        <input type="number" name="perPage" th:value="${emailConfs.pageSize}" min="10">
+    </label>
+    <label>
+        Show deleted:
+        <input type="checkbox" name="show_deleted" th:checked="${show_deleted}" value="true">
+    </label>
+
+    <select th:value="${user_ids}" name="user_ids" multiple="multiple">
+        <option th:each="userV : ${allowedUsers}"
+                th:value="${userV.id}"
+                th:text="${userV.id} + ' - ' + ${userV.login} + ' - ' + ${userV.nickname}"></option>
+
+    </select>
+    <button type="submit">Search</button>
+</form>
+<br>
+
+<h2>Email confirmations:</h2>
+<br>
+<br>
+<th:block th:each="emailConf : ${emailConfs.value}">
+    <li>
+        <span th:text="'Email: ' + ${emailConf.email}"></span>
+        <span th:text="'Confirmed: ' + ${emailConf.confirmed}"></span>
+        <span th:text="'Hash: ' + ${emailConf.hash}"></span>
+        <span th:text="'Salt: ' + ${emailConf.salt}"></span>
+        <span th:text="'Deleted: ' + ${emailConf.deleted}"></span>
+        <span th:text="'User: ' + ${emailConf.user}"></span>
+        <a th:href="@{/emailConf/update/{id}(id=${emailConf.id})}">Edit email</a>
+        <a th:href="@{/emailConf/delete/{id}(id=${emailConf.id})}" onclick="return confirm('Вы уверены, что хотите удалить?');">Delete email</a>
+    </li>
+</th:block>
+<br>
+</body>
+</html>

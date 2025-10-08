@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Reviews</title>
+    <script>
+        window.onload = function() {
+            var errorMessage = document.getElementById('errorMessage');
+            if (errorMessage && errorMessage.textContent.trim() !== '') {
+                alert(errorMessage.textContent);
+            }
+        };
+    </script>
+</head>
+<body>
+<h3 id="errorMessage" th:text="${error_message}" style="display:none;"></h3>
+<h1>Reviews list</h1>
+<a th:href="@{/reviews/add}">Add Review</a>
+<form action="/reviews" method="get">
+    <label>
+        User:
+        <select name="user_id" th:value="${user_id}">
+            <option th:each="option : ${users}"
+                    th:value="${option.id}"
+                    th:text="${option.id} + ' - ' + ${option.login} + ' - ' + ${option.nickname}"></option>
+
+        </select>
+    </label>
+
+    <br>
+    <label>
+        Recipe:
+        <select name="recipe_id" th:value="${recipe_id}">
+            <option th:each="option : ${recipes}"
+                    th:value="${option.id}"
+                    th:text="${option.id} + ' - ' + ${option.recipe_name}"></option>
+        </select>
+    </label>
+
+    <br>
+    <label>
+        Group:
+        <select name="group" th:value="${group}">
+            <option th:each="option : ${groups}"
+                    th:value="${option}"
+                    th:text="${option.displayName}"></option>
+        </select>
+    </label>
+
+    <br>
+    <label>
+        Page:
+        <input type="number" name="page" th:value="${reviews.currentPage}">
+    </label>
+    <label>
+        Page size:
+        <input type="number" name="perPage" th:value="${reviews.pageSize}" min="10">
+    </label>
+
+    <br>
+    <label>
+        Show deleted:
+        <input type="checkbox" name="show_deleted" value="true">
+    </label>
+    <button type="submit">Search</button>
+</form>
+<br>
+<br>
+<ul>
+    <h2>Reviews:</h2>
+    <th:block th:each="review : ${reviews.value}">
+        <li>
+            <span th:text="'Recipe - ' + ${review.recipe.id} + ' - ' + ${review.recipe.recipe_name}"></span>
+            <span th:text="'User - ' + ${review.user.id} + ' - ' + ${review.user.login} + ' - ' + ${review.user.nickname}"></span>
+            <span th:text="'Text - ' + ${review.text}"></span>
+            <span th:text="'Rating - ' + ${review.rating}"></span>
+            <span th:text="'Deleted - ' + ${review.deleted}"></span>
+
+            <a th:href="@{/reviews/update/{id}(id=${review.id})}">Edit review</a>
+            <a th:href="@{/reviews/delete/{id}(id=${review.id})}" onclick="return confirm('Вы уверены, что хотите удалить?');">Delete review</a>
+        </li>
+    </th:block>
+</ul>
+</body>
+</html>

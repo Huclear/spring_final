@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit user</title>
+</head>
+<body>
+<form action="#" th:action="@{/users/update}" method="post" th:object="${user_model}">
+    <input type="text" th:field="*{login}" placeholder="Логин" required>
+    <div th:if="${#fields.hasErrors('login')}" style="color:red;">
+        <span th:errors="*{login}"></span>
+    </div>
+
+    <input type="text" th:field="*{password}" placeholder="Пароль" required>
+    <div th:if="${#fields.hasErrors('password')}" style="color:red;">
+        <span th:errors="*{password}"></span>
+    </div>
+
+    <input type="text" th:field="*{nickname}" placeholder="Псевдоним" required>
+    <div th:if="${#fields.hasErrors('nickname')}" style="color:red;">
+        <span th:errors="*{nickname}"></span>
+    </div>
+
+    <input type="text" th:field="*{aboutMe}" placeholder="О себе" required>
+    <div th:if="${#fields.hasErrors('aboutMe')}" style="color:red;">
+        <span th:errors="*{aboutMe}"></span>
+    </div>
+
+    <button type="submit">Edit user</button>
+</form>
+</body>
+</html>

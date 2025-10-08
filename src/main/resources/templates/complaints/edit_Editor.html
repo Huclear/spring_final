@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit complaint</title>
+</head>
+<body>
+
+<br>
+<span th:if="${complaint_model.recipe != null}"
+      th:text="'Recipe - ' + ${complaint_model.recipe.id} + ' - ' + ${complaint_model.recipe.recipe_name} + ' - ' + ${complaint_model.recipe.recipe_description}"></span>
+<br>
+
+<br>
+<span th:if="${complaint_model.user != null}"
+      th:text="'User - ' + ${complaint_model.user.id} + ' - ' + ${complaint_model.user.login} + ' - ' + ${complaint_model.user.nickname}"></span>
+<br>
+
+<br>
+<span th:text="'Topic - ' + ${complaint_model.topic}"></span>
+<br>
+
+<br>
+<span th:text="'Description - ' + ${complaint_model.Description}"></span>
+<br>
+
+<form action="#" th:action="@{/complaints/edit}" th:object="${complaint_model}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <input type="hidden" th:field="*{recipe}"/>
+    <input type="hidden" th:field="*{user}"/>
+    <input type="hidden" th:field="*{topic}"/>
+    <input type="hidden" th:field="*{description}"/>
+    <input type="hidden" th:field="*{user_sender}"/>
+    <label>
+        Status:
+        <select th:field="*{status}">
+            <option th:each="option : ${statuses}"
+                    th:value="${option}"
+                    th:text="${option.name}"></option>
+        </select>
+    </label>
+    <button type="submit">Edit complaint</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit recipe</title>
+</head>
+<body>
+<form action="#" th:action="@{/recipes/edit}" method="post" th:object="${recipe_model}">
+    <input type="text" th:field="*{recipe_name}" placeholder="Название" required>
+    <div th:if="${#fields.hasErrors('recipe_name')}" style="color:red;">
+        <span th:errors="*{recipe_name}"></span>
+    </div>
+
+    <input type="text" th:field="*{recipe_description}" placeholder="Описание" required>
+    <div th:if="${#fields.hasErrors('recipe_description')}" style="color:red;">
+        <span th:errors="*{recipe_description}"></span>
+    </div>
+
+    <select th:field="*{user}" required>
+        <option th:each="user : ${allowedUsers}"
+                th:value="${user.id}"
+                th:text="${user.id} + ' - ' + ${user.login} + ' - ' + ${user.nickname}"></option>
+
+    </select>
+
+    <select th:field="*{filters}" multiple="multiple">
+        <option th:each="filter : ${allowed_filters}"
+                th:value="${filter.id}"
+                th:text="'Name(en) - ' + ${filter.name.en} + '; Name(ru) - ' + ${filter.name.ru}"></option>
+
+    </select>
+    <button type="submit">Edit recipe</button>
+</form>
+</body>
+</html>
